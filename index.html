@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A Little Question 💌</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffe1ec, #fff7fb);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            border-radius: 28px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(255, 105, 150, 0.25);
+            position: relative;
+        }
+
+        h1 {
+            color: #ff4f8b;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        .cute-box {
+            font-size: 90px;
+            animation: float 2.5s ease-in-out infinite;
+            margin: 20px 0;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .buttons {
+            height: 120px;
+            position: relative;
+            margin-top: 20px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 28px;
+        }
+
+        button {
+            border: none;
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-size: 17px;
+            cursor: pointer;
+            transition: 0.25s ease;
+            font-weight: 600;
+        }
+
+        #yesBtn {
+            background: #ff4f8b;
+            color: white;
+            box-shadow: 0 8px 18px rgba(255, 79, 139, 0.35);
+
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-120%);
+        }
+
+        #yesBtn:hover {
+            transform: translateX(-120%) scale(1.08);
+            background: #ff2f78;
+        }
+
+        #noBtn {
+            background: #f1f1f1;
+            color: #444;
+
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            transform: translateX(20%);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .final-message {
+            animation: pop 0.5s ease;
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .heart {
+            position: fixed;
+            font-size: 24px;
+            animation: rise 4s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes rise {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        .small-note {
+            font-size: 13px;
+            color: #999;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 360px;
+                padding: 28px 18px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            p {
+                font-size: 15px;
+            }
+
+            .cute-box {
+                font-size: 70px;
+            }
+
+            button {
+                padding: 13px 24px;
+                font-size: 16px;
+            }
+
+            .buttons {
+                height: 130px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="mainCard">
+        <h1>Hey you 💕</h1>
+        <p>I have one very important question...</p>
+
+        <div class="cute-box">🥺💌</div>
+
+        <h1>Do you love me?</h1>
+
+        <div class="buttons">
+            <button id="yesBtn">Yes 💖</button>
+            <button id="noBtn">No 😭</button>
+        </div>
+
+        <div class="small-note">Choose carefully hehe</div>
+    </div>
+
+    <div class="container hidden final-message" id="finalCard">
+        <h1>I knew you’d say yes 💕</h1>
+        <div class="cute-box">🐻💗</div>
+        <p>You just made my day.</p>
+        <p>Now you owe me a cute date 😌</p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        emailjs.init({
+            publicKey: "zNz2jIXaMmO-T1uvP",
+        });
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
+        const mainCard = document.getElementById("mainCard");
+        const finalCard = document.getElementById("finalCard");
+
+        const noTexts = [
+            "No 😭",
+            "Are you sure?",
+            "Really?",
+            "Think again 🥺",
+            "Please?",
+            "Wrong button 😤",
+            "Try Yes 💕"
+        ];
+
+        let noClickCount = 0;
+
+        function moveNoButton() {
+            const container = document.querySelector(".buttons");
+            const maxX = container.offsetWidth - noBtn.offsetWidth;
+            const maxY = container.offsetHeight - noBtn.offsetHeight;
+
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+
+            noBtn.textContent = noTexts[noClickCount % noTexts.length];
+            noClickCount++;
+        }
+
+        noBtn.addEventListener("mouseover", moveNoButton);
+        noBtn.addEventListener("click", moveNoButton);
+        noBtn.addEventListener("touchstart", function (event) {
+            event.preventDefault();
+            moveNoButton();
+        });
+
+        yesBtn.addEventListener("click", () => {
+            emailjs.send("service_o040lpm", "template_vbkb54b", {
+                name: "Kyi Zin Thant",
+                message: "She clicked YES on your love website 💖",
+                time: new Date().toLocaleString(),
+            });
+
+            mainCard.classList.add("hidden");
+            finalCard.classList.remove("hidden");
+
+            setInterval(createHeart, 250);
+        });
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart");
+            heart.textContent = "💖";
+
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.bottom = "-30px";
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 4000);
+        }
+    </script>
+</body>
+
+</html>
